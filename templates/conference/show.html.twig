@@ -4,18 +4,25 @@
 
 {% block body %}
     <h2>{{ conference }} Conference</h2>
-
-        {% for comment in comments %}
-            <div>There are {{ comments|length }} comments.</div>
-            {% if comment.photoFilename %}
-                <img src="{{ asset('uploads/photos/' ~ comment.photoFilename) }}" alt="{{ comment }}">
+        {% if comments|length > 0 %}
+            {% for comment in comments %}
+                <div>There are {{ comments|length }} comments.</div>
+                {% if comment.photoFilename %}
+                    <img src="{{ asset('uploads/photos/' ~ comment.photoFilename) }}" alt="{{ comment }}">
+                {% endif %}
+                <h4>{{ comment.author }}</h4>
+                <small>
+                    {{ comment.createdAt|format_datetime('medium', 'short') }}
+                </small>
+                <p>{{ comment.text }}</p>
+            {% endfor %}
+            {% if previous >= 0 %}
+                <a href="{{ path('conference', { 'id': conference.id, 'offset': previous }) }}">Previous</a>
             {% endif %}
-            <h4>{{ comment.author }}</h4>
-            <small>
-                {{ comment.createdAt|format_datetime('medium', 'short') }}
-            </small>
-            <p>{{ comment.text }}</p>
-        {% else %}
-            <div>No comments</div>
-        {% endfor %}
+            {% if next < comments|length %}
+                <a href="{{ path('conference', { 'id': conference.id, 'offset': next }) }}">Next</a>
+            {% endif %}
+    {% else %}
+        <div>No comments</div>
+    {% endif %}
 {% endblock %}
